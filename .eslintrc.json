@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "react-app"
+  ],
+  "rules": {
+    "jsx-a11y/no-onchange": "off",
+    "jsx-a11y/label-has-associated-control": "off"
+  }
+}
+

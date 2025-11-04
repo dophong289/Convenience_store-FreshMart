@@ -1,0 +1,6 @@
+{
+  "// Nếu bạn cần edit Java files, tạm thời xóa file .vscode/settings.json": "",
+  "// Backend compile qua Maven, không cần VS Code Java extension": "",
+  "// Chạy backend: cd backend-springboot && mvnw.cmd spring-boot:run": ""
+}
+

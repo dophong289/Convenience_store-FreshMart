@@ -1,0 +1,41 @@
+-- FreshMart Sample Data
+-- This file will auto-populate when you run the application
+
+-- Categories
+INSERT INTO categories (id, name, slug, icon, image, product_count, created_at, updated_at) VALUES
+(1, 'Trái cây', 'trai-cay', '🍎', 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400', 0, NOW(), NOW()),
+(2, 'Rau củ quả', 'rau-cu-qua', '🥬', 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400', 0, NOW(), NOW()),
+(3, 'Thịt tươi sống', 'thit-tuoi-song', '🥩', 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400', 0, NOW(), NOW()),
+(4, 'Hải sản', 'hai-san', '🦐', 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=400', 0, NOW(), NOW()),
+(5, 'Sữa & Trứng', 'sua-trung', '🥛', 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400', 0, NOW(), NOW()),
+(6, 'Bánh mì & Bánh ngọt', 'banh-mi-banh-ngot', '🍞', 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400', 0, NOW(), NOW()),
+(7, 'Đồ uống', 'do-uong', '🥤', 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400', 0, NOW(), NOW()),
+(8, 'Snack & Kẹo', 'snack-keo', '🍪', 'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400', 0, NOW(), NOW());
+
+-- Products (Sample)
+INSERT INTO products (id, name, slug, description, price, original_price, image, category_id, category_slug, brand, origin, stock, sold, rating, review_count, is_flash_sale, flash_sale_discount, flash_sale_end, ingredients, expiry, created_at, updated_at) VALUES
+-- Trái cây
+(1, 'Táo Fuji Nhật Bản', 'tao-fuji-nhat-ban', 'Táo Fuji Nhật Bản nhập khẩu, giòn ngọt', 89000, 110000, 'https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?w=400', 1, 'trai-cay', 'FreshMart', 'Nhật Bản', 100, 234, 4.8, 89, true, 19, DATE_ADD(NOW(), INTERVAL 6 HOUR), 'Táo Fuji', '7 ngày', NOW(), NOW()),
+(2, 'Cam Sành Cao Phong', 'cam-sanh-cao-phong', 'Cam sành Cao Phong ngọt, nhiều nước', 45000, 55000, 'https://images.unsplash.com/photo-1547514701-42782101795e?w=400', 1, 'trai-cay', 'Organic Farm', 'Việt Nam', 150, 567, 4.9, 234, false, null, null, 'Cam sành', '5 ngày', NOW(), NOW()),
+(3, 'Dâu Tây Đà Lạt', 'dau-tay-da-lat', 'Dâu tây Đà Lạt tươi ngon, ngọt tự nhiên', 125000, 145000, 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=400', 1, 'trai-cay', 'Đà Lạt Farm', 'Việt Nam', 80, 345, 4.7, 156, true, 14, DATE_ADD(NOW(), INTERVAL 4 HOUR), 'Dâu tây', '3 ngày', NOW(), NOW()),
+
+-- Rau củ quả
+(4, 'Rau Cải Xanh Hữu Cơ', 'rau-cai-xanh-huu-co', 'Rau cải xanh hữu cơ, không hóa chất', 15000, 20000, 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=400', 2, 'rau-cu-qua', 'Organic Farm', 'Việt Nam', 200, 678, 4.6, 234, false, null, null, 'Rau cải xanh', '2 ngày', NOW(), NOW()),
+(5, 'Cà Chua Bi', 'ca-chua-bi', 'Cà chua bi ngọt, giàu vitamin', 28000, 35000, 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400', 2, 'rau-cu-qua', 'Đà Lạt Farm', 'Việt Nam', 120, 456, 4.5, 189, false, null, null, 'Cà chua bi', '4 ngày', NOW(), NOW()),
+
+-- Thịt
+(6, 'Thịt Ba Chỉ Heo', 'thit-ba-chi-heo', 'Thịt ba chỉ heo tươi ngon, thái sẵn', 89000, 99000, 'https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=400', 3, 'thit-tuoi-song', 'C.P.', 'Việt Nam', 50, 234, 4.7, 123, false, null, null, 'Thịt heo', '1 ngày', NOW(), NOW()),
+(7, 'Ức Gà Phi Lê', 'uc-ga-phi-le', 'Ức gà phi lê, ít béo, giàu protein', 65000, 75000, 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400', 3, 'thit-tuoi-song', 'C.P.', 'Việt Nam', 75, 345, 4.8, 167, true, 13, DATE_ADD(NOW(), INTERVAL 3 HOUR), 'Thịt gà', '1 ngày', NOW(), NOW()),
+
+-- Hải sản
+(8, 'Tôm Sú Tươi', 'tom-su-tuoi', 'Tôm sú tươi sống, to béo', 189000, 220000, 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400', 4, 'hai-san', 'Biển Việt', 'Việt Nam', 40, 189, 4.9, 98, false, null, null, 'Tôm sú', 'Ngày mua', NOW(), NOW()),
+
+-- Sữa & Trứng
+(9, 'Sữa Tươi Vinamilk', 'sua-tuoi-vinamilk', 'Sữa tươi tiệt trùng Vinamilk 100%', 35000, 38000, 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400', 5, 'sua-trung', 'Vinamilk', 'Việt Nam', 200, 890, 4.8, 456, false, null, null, 'Sữa bò tươi 100%', '7 ngày', NOW(), NOW()),
+(10, 'Trứng Gà Omega 3', 'trung-ga-omega-3', 'Trứng gà omega 3, giàu dinh dưỡng', 45000, 50000, 'https://images.unsplash.com/photo-1518569656558-1f25e69d93d7?w=400', 5, 'sua-trung', 'Ba Huân', 'Việt Nam', 150, 567, 4.7, 234, true, 10, DATE_ADD(NOW(), INTERVAL 5 HOUR), 'Trứng gà', '10 ngày', NOW(), NOW());
+
+-- Update category product counts
+UPDATE categories SET product_count = (
+    SELECT COUNT(*) FROM products WHERE products.category_id = categories.id
+);
+
