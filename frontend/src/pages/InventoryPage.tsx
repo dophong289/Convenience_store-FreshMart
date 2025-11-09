@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Table, Button, Badge, Form, InputGroup, Alert, Modal } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { productService } from '../api/productService';
 import { Product } from '../types';
 
 const InventoryPage: React.FC = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -130,9 +132,14 @@ const InventoryPage: React.FC = () => {
           <h1 className="gradient-text mb-2">📦 Quản lý Tồn kho</h1>
           <p className="text-muted">Theo dõi và quản lý số lượng sản phẩm</p>
         </div>
-        <Button variant="success" onClick={loadProducts}>
-          🔄 Refresh
-        </Button>
+        <div className="d-flex gap-2">
+          <Button variant="outline-primary" onClick={() => navigate('/inventory/supplier-orders')}>
+            Quản lý đơn NCC
+          </Button>
+          <Button variant="success" onClick={loadProducts}>
+            dY", Refresh
+          </Button>
+        </div>
       </div>
 
       {success && (

@@ -30,6 +30,37 @@ export interface Product {
   updatedBy?: string;
 }
 
+export interface Supplier {
+  id: number;
+  name: string;
+  contactName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+}
+
+export interface SupplierOrderItem {
+  productId: number;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+export interface SupplierOrder {
+  id: number;
+  orderNumber: string;
+  orderDate: string;
+  expectedDeliveryDate?: string;
+  status: string;
+  totalAmount: number;
+  notes?: string;
+  supplier: Supplier;
+  items: SupplierOrderItem[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Category {
   id: number;
   name: string;

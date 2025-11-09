@@ -13,6 +13,8 @@ export const API_ENDPOINTS = {
   BEST_SELLING_PRODUCTS: '/products/best-selling',
   PRODUCT_ORIGINS: '/products/filters/origins',
   PRODUCT_BRANDS: '/products/filters/brands',
+  SUPPLIERS: '/suppliers',
+  SUPPLIER_ORDERS: '/supplier-orders',
   
   // Categories
   CATEGORIES: '/categories',

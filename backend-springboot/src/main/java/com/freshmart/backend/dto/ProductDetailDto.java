@@ -50,5 +50,8 @@ public class ProductDetailDto {
         private Long id;
         private String name;
         private String slug;
+        private String icon;
+        private String image;
+        private Integer productCount;
     }
 }

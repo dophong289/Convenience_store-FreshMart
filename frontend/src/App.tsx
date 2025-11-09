@@ -12,6 +12,7 @@ import SignupPage from './pages/SignupPage';
 import InventoryPage from './pages/InventoryPage';
 import RefundRequestPage from './pages/RefundRequestPage';
 import ProductEditPage from './pages/ProductEditPage';
+import SupplierOrdersPage from './pages/SupplierOrdersPage';
 import { Container } from 'react-bootstrap';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/admin/products/:id/edit" element={<ProductEditPage />} />
               <Route path="/inventory" element={<InventoryPage />} />
+              <Route path="/inventory/supplier-orders" element={<SupplierOrdersPage />} />
               <Route path="/refund-request" element={<RefundRequestPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
