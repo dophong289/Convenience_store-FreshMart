@@ -1,3 +1,5 @@
+export type ProductStatus = 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK' | 'DISCONTINUED';
+
 export interface Product {
   id: number;
   name: string;
@@ -15,6 +17,7 @@ export interface Product {
   sold: number;
   rating: number;
   reviewCount: number;
+  status: ProductStatus;
   isFlashSale: boolean;
   flashSaleDiscount?: number;
   flashSaleEnd?: string;
@@ -23,6 +26,8 @@ export interface Product {
   ingredients?: string;
   expiry?: string;
   promotions?: string[];
+  updatedAt?: string;
+  updatedBy?: string;
 }
 
 export interface Category {

@@ -1,7 +1,14 @@
 package com.freshmart.backend.service;
 
+import com.freshmart.backend.dto.ProductDetailDto;
+import com.freshmart.backend.dto.ProductDetailDto.CategorySummaryDto;
+import com.freshmart.backend.dto.ProductUpdateRequest;
+import com.freshmart.backend.exception.BadRequestException;
 import com.freshmart.backend.exception.ResourceNotFoundException;
+import com.freshmart.backend.model.Category;
 import com.freshmart.backend.model.Product;
+import com.freshmart.backend.model.ProductStatus;
+import com.freshmart.backend.repository.CategoryRepository;
 import com.freshmart.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,9 +17,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,6 +29,7 @@ import java.util.List;
 public class ProductService {
     
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
     
     @Transactional(readOnly = true)
     public List<Product> getAllProducts() {
@@ -27,7 +37,7 @@ public class ProductService {
     }
     
     @Transactional(readOnly = true)
-    public Page<Product> getProductsWithFilters(
+    public Page<ProductDetailDto> getProductsWithFilters(
             String category,
             String search,
             BigDecimal minPrice,
@@ -43,15 +53,23 @@ public class ProductService {
         Sort sort = Sort.by(Sort.Direction.fromString(sortOrder.toUpperCase()), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         
-        return productRepository.findWithFilters(
+        Page<Product> productPage = productRepository.findWithFilters(
                 category, search, minPrice, maxPrice, origin, brand, inStock, pageable
         );
+
+        return productPage.map(this::mapToProductDetailDto);
     }
     
     @Transactional(readOnly = true)
     public Product getProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public ProductDetailDto getProductDetail(Long id) {
+        Product product = getProductById(id);
+        return mapToProductDetailDto(product);
     }
     
     @Transactional(readOnly = true)
@@ -91,28 +109,48 @@ public class ProductService {
     }
     
     @Transactional
-    public Product updateProduct(Long id, Product productDetails) {
+    public ProductDetailDto updateProduct(Long id, ProductUpdateRequest request, String updatedBy) {
         Product product = getProductById(id);
-        
-        product.setName(productDetails.getName());
-        product.setSlug(productDetails.getSlug());
-        product.setDescription(productDetails.getDescription());
-        product.setPrice(productDetails.getPrice());
-        product.setOriginalPrice(productDetails.getOriginalPrice());
-        product.setImage(productDetails.getImage());
-        product.setImages(productDetails.getImages());
-        product.setCategory(productDetails.getCategory());
-        product.setCategorySlug(productDetails.getCategorySlug());
-        product.setBrand(productDetails.getBrand());
-        product.setOrigin(productDetails.getOrigin());
-        product.setStock(productDetails.getStock());
-        product.setWeights(productDetails.getWeights());
-        product.setTags(productDetails.getTags());
-        product.setIngredients(productDetails.getIngredients());
-        product.setExpiry(productDetails.getExpiry());
-        product.setPromotions(productDetails.getPromotions());
-        
-        return productRepository.save(product);
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + request.getCategoryId()));
+
+        validateBusinessRules(request);
+
+        product.setName(request.getName());
+        product.setSlug(request.getSlug());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setOriginalPrice(request.getOriginalPrice());
+        product.setImage(request.getImage());
+        product.setImages(CollectionUtils.isEmpty(request.getImages()) ? new ArrayList<>() : new ArrayList<>(request.getImages()));
+        product.setCategory(category);
+        product.setCategorySlug(request.getCategorySlug());
+        product.setBrand(request.getBrand());
+        product.setOrigin(request.getOrigin());
+        product.setStock(request.getStock());
+        product.setStatus(request.getStatus());
+        product.setTags(CollectionUtils.isEmpty(request.getTags()) ? new ArrayList<>() : new ArrayList<>(request.getTags()));
+        product.setPromotions(CollectionUtils.isEmpty(request.getPromotions()) ? new ArrayList<>() : new ArrayList<>(request.getPromotions()));
+        product.setIngredients(request.getIngredients());
+        product.setExpiry(request.getExpiry());
+        product.setIsFlashSale(request.getIsFlashSale());
+        product.setFlashSaleDiscount(Boolean.TRUE.equals(request.getIsFlashSale()) ? request.getFlashSaleDiscount() : null);
+        product.setUpdatedBy(updatedBy);
+
+        if (request.getSold() != null) {
+            product.setSold(request.getSold());
+        }
+
+        if (request.getRating() != null) {
+            product.setRating(request.getRating());
+        }
+
+        if (request.getReviewCount() != null) {
+            product.setReviewCount(request.getReviewCount());
+        }
+
+        Product saved = productRepository.save(product);
+        return mapToProductDetailDto(saved);
     }
     
     @Transactional
@@ -127,6 +165,59 @@ public class ProductService {
         product.setStock(product.getStock() - quantity);
         product.setSold(product.getSold() + quantity);
         productRepository.save(product);
+    }
+
+    private void validateBusinessRules(ProductUpdateRequest request) {
+        if (Boolean.TRUE.equals(request.getIsFlashSale()) && request.getFlashSaleDiscount() == null) {
+            throw new BadRequestException("Flash sale discount is required when flash sale is enabled");
+        }
+
+        if (Boolean.FALSE.equals(request.getIsFlashSale())) {
+            request.setFlashSaleDiscount(null);
+        }
+
+        if (request.getStock() == 0 && request.getStatus() == ProductStatus.IN_STOCK) {
+            throw new BadRequestException("Cannot set status IN_STOCK while stock is zero");
+        }
+
+        if (request.getStock() > 0 && request.getStatus() == ProductStatus.OUT_OF_STOCK) {
+            throw new BadRequestException("Cannot mark product as OUT_OF_STOCK while stock is greater than zero");
+        }
+    }
+
+    private ProductDetailDto mapToProductDetailDto(Product product) {
+        return ProductDetailDto.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .slug(product.getSlug())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .originalPrice(product.getOriginalPrice())
+                .image(product.getImage())
+                .images(product.getImages() == null ? List.of() : product.getImages())
+                .category(CategorySummaryDto.builder()
+                        .id(product.getCategory().getId())
+                        .name(product.getCategory().getName())
+                        .slug(product.getCategory().getSlug())
+                        .build())
+                .categorySlug(product.getCategorySlug())
+                .brand(product.getBrand())
+                .origin(product.getOrigin())
+                .stock(product.getStock())
+                .sold(product.getSold())
+                .rating(product.getRating())
+                .reviewCount(product.getReviewCount())
+                .status(product.getStatus())
+                .isFlashSale(product.getIsFlashSale())
+                .flashSaleDiscount(product.getFlashSaleDiscount())
+                .tags(product.getTags() == null ? List.of() : product.getTags())
+                .promotions(product.getPromotions() == null ? List.of() : product.getPromotions())
+                .ingredients(product.getIngredients())
+                .expiry(product.getExpiry())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
+                .updatedBy(product.getUpdatedBy())
+                .build();
     }
 }
 

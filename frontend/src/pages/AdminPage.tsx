@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert, Table, Modal } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { productService } from '../api/productService';
 import { categoryService } from '../api/categoryService';
 import { Product, Category } from '../types';
 
 const AdminPage: React.FC = () => {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
@@ -83,34 +83,11 @@ const AdminPage: React.FC = () => {
   };
 
   const handleEdit = (product: Product) => {
-    setEditMode(true);
-    setEditingId(product.id);
-    setFormData({
-      name: product.name,
-      slug: product.slug,
-      description: product.description || '',
-      price: product.price.toString(),
-      originalPrice: product.originalPrice?.toString() || '',
-      image: product.image,
-      categoryId: product.category.id.toString(),
-      categorySlug: product.categorySlug,
-      brand: product.brand || '',
-      origin: product.origin || '',
-      stock: product.stock.toString(),
-      rating: product.rating.toString(),
-      reviewCount: product.reviewCount.toString(),
-      isFlashSale: product.isFlashSale,
-      flashSaleDiscount: product.flashSaleDiscount?.toString() || '',
-      ingredients: product.ingredients || '',
-      expiry: product.expiry || '',
-    });
-    setShowForm(true);
+    navigate(`/admin/products/${product.id}/edit`);
   };
 
   const handleCloseForm = () => {
     setShowForm(false);
-    setEditMode(false);
-    setEditingId(null);
     setFormData({
       name: '',
       slug: '',
@@ -164,14 +141,8 @@ const AdminPage: React.FC = () => {
         promotions: [],
       };
 
-      const url = editMode 
-        ? `http://localhost:8080/api/products/${editingId}`
-        : 'http://localhost:8080/api/products';
-      
-      const method = editMode ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method: method,
+      const response = await fetch('http://localhost:8080/api/products', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -179,12 +150,12 @@ const AdminPage: React.FC = () => {
       });
 
       if (response.ok) {
-        setSuccess(editMode ? '✅ Cập nhật sản phẩm thành công!' : '✅ Thêm sản phẩm thành công!');
+        setSuccess('✅ Thêm sản phẩm thành công!');
         handleCloseForm();
         loadData();
       } else {
         const errorData = await response.json();
-        setError(errorData.message || (editMode ? 'Không thể cập nhật sản phẩm' : 'Không thể thêm sản phẩm'));
+        setError(errorData.message || 'Không thể thêm sản phẩm');
       }
     } catch (err: any) {
       setError(err.message || 'Có lỗi xảy ra');
@@ -312,7 +283,7 @@ const AdminPage: React.FC = () => {
       <Modal show={showForm} onHide={handleCloseForm} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>
-            {editMode ? '✏️ Sửa sản phẩm' : '➕ Thêm sản phẩm mới'}
+            ➕ Thêm sản phẩm mới
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -534,8 +505,8 @@ const AdminPage: React.FC = () => {
             <div className="d-grid gap-2">
               <Button variant="success" type="submit" disabled={loading}>
                 {loading 
-                  ? (editMode ? 'Đang cập nhật...' : 'Đang thêm...') 
-                  : (editMode ? '✅ Cập nhật sản phẩm' : '✅ Thêm sản phẩm')
+                  ? 'Đang thêm...' 
+                  : '✅ Thêm sản phẩm'
                 }
               </Button>
               <Button variant="outline-secondary" onClick={handleCloseForm}>

@@ -1,11 +1,15 @@
 package com.freshmart.backend.controller;
 
+import com.freshmart.backend.dto.ProductDetailDto;
+import com.freshmart.backend.dto.ProductUpdateRequest;
 import com.freshmart.backend.model.Product;
 import com.freshmart.backend.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -34,7 +38,7 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        Page<Product> productPage = productService.getProductsWithFilters(
+        Page<ProductDetailDto> productPage = productService.getProductsWithFilters(
                 category, search, minPrice, maxPrice, origin, brand, inStock,
                 sortBy, sortOrder, page, size
         );
@@ -57,6 +61,17 @@ public class ProductController {
         response.put("success", true);
         response.put("data", product);
         
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/manage/{id}")
+    public ResponseEntity<Map<String, Object>> getProductDetailForManagement(@PathVariable Long id) {
+        ProductDetailDto detail = productService.getProductDetail(id);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("data", detail);
+
         return ResponseEntity.ok(response);
     }
     
@@ -130,9 +145,11 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateProduct(
             @PathVariable Long id,
-            @RequestBody Product product
+            @Valid @RequestBody ProductUpdateRequest request,
+            Authentication authentication
     ) {
-        Product updatedProduct = productService.updateProduct(id, product);
+        String updatedBy = authentication != null ? authentication.getName() : "staff-demo";
+        ProductDetailDto updatedProduct = productService.updateProduct(id, request, updatedBy);
         
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
