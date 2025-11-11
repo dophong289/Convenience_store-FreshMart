@@ -11,8 +11,12 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import InventoryPage from './pages/InventoryPage';
 import RefundRequestPage from './pages/RefundRequestPage';
+
+import ProductDetailPage from "./pages/ProductDetailPage";
+
 import ProductEditPage from './pages/ProductEditPage';
 import SupplierOrdersPage from './pages/SupplierOrdersPage';
+
 import { Container } from 'react-bootstrap';
 
 function App() {
@@ -26,6 +30,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/products" element={<ProductsPage />} />
+              <Route path="/product/:slug" element={<ProductDetailPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/admin" element={<AdminPage />} />

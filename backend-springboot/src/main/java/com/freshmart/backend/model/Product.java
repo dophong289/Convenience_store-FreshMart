@@ -97,7 +97,7 @@ public class Product {
     private String ingredients;
     
     private String expiry;
-    
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "product_promotions", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "promotion")

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Spinner, Alert } from 'react-bootstrap';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams,Link } from 'react-router-dom';
 import { productService } from '../api/productService';
 import { categoryService } from '../api/categoryService';
 import { Product, Category } from '../types';
 import ProductCard from '../components/ProductCard';
+
 
 const ProductsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -204,6 +205,9 @@ const ProductsPage: React.FC = () => {
               <Row xs={1} md={2} lg={3} className="g-4">
                 {products.map((product, index) => (
                   <Col key={product.id} style={{ animationDelay: `${index * 0.05}s` }} className="scale-in">
+                    <Link to={`/products/${product.slug}`}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    ></Link>
                     <ProductCard product={product} />
                   </Col>
                 ))}
