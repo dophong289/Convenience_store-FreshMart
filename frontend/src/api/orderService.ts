@@ -1,6 +1,6 @@
 import apiClient from './apiClient';
 import { API_ENDPOINTS } from './config';
-import { Product } from './productService';
+import { Product } from '../types';
 
 export interface OrderItem {
   id?: number;

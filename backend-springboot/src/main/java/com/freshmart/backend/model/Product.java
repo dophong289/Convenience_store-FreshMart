@@ -70,6 +70,10 @@ public class Product {
     
     @Column(name = "review_count")
     private Integer reviewCount = 0;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProductStatus status = ProductStatus.IN_STOCK;
     
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "product_weights", joinColumns = @JoinColumn(name = "product_id"))
@@ -106,6 +110,9 @@ public class Product {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
     
     @Embeddable
     @Data

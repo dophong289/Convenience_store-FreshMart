@@ -6,11 +6,15 @@ export const API_ENDPOINTS = {
   // Products
   PRODUCTS: '/products',
   PRODUCT_BY_SLUG: (slug: string) => `/products/${slug}`,
+  PRODUCT_MANAGE_BY_ID: (id: number) => `/products/manage/${id}`,
+  PRODUCT_UPDATE: (id: number) => `/products/${id}`,
   PRODUCTS_BY_CATEGORY: (slug: string) => `/products/category/${slug}`,
   FLASH_SALE_PRODUCTS: '/products/flash-sale',
   BEST_SELLING_PRODUCTS: '/products/best-selling',
   PRODUCT_ORIGINS: '/products/filters/origins',
   PRODUCT_BRANDS: '/products/filters/brands',
+  SUPPLIERS: '/suppliers',
+  SUPPLIER_ORDERS: '/supplier-orders',
   
   // Categories
   CATEGORIES: '/categories',
